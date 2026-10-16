@@ -1,7 +1,8 @@
 # yaml-language-server: $schema=https://schema.buildwithfern.dev/docs-yml.json
 
 instances:
-  - url: docs.binflow.org
+  - url: binflow-507875.docs.buildwithfern.com
+    custom-domain: docs.binflow.org
 title: binflow | Documentation
 layout:
   searchbar-placement: header
