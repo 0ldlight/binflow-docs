@@ -1,13 +1,7 @@
 # yaml-language-server: $schema=https://schema.buildwithfern.dev/docs-yml.json
 
 instances:
-  - url: binflow-507875.docs.buildwithfern.com
-    edit-this-page:
-      github:
-        owner: fern-starter
-        repo: binflow-136557-521897
-        branch: main
-      launch: dashboard
+  - url: docs.binflow.org
 title: binflow | Documentation
 layout:
   searchbar-placement: header
