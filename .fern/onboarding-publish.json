@@ -1,0 +1,10 @@
+{
+  "desiredContentHash": "b5dd1e6df49888792d8b63875b3e094eeebe56815d80f424e8083e27f625d42e",
+  "docsUrl": "https://binflow-507875.docs.buildwithfern.com",
+  "starter": {
+    "repoOwner": "fern-api",
+    "repoName": "docs-starter-internal",
+    "commitSha": "7a136fbd26e750f96d049759bc080129b23e7a5c",
+    "label": "2026-07-layouts-launch"
+  }
+}
