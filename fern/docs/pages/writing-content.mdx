@@ -16,13 +16,13 @@ The linked workflows define publication and decision boundaries.
 先写可失败的行为契约，再实现最小切片并保存真实 RED/GREEN 证据。测试覆盖成功、错误、权限和边界；不新增跳过、不删断言、不降低阈值以通过检查。
 Write a failing behavioral contract before the minimal implementation. Preserve real red/green evidence and never weaken checks to turn them green.
 
-Go 变更需要格式检查、竞态测试、vet 与构建。共享入口由 [BIN-124](https://linear.app/binfloow/issue/BIN-124) 落地，不能在其验证前声明 CI 已就绪。
-Go changes require formatting, race tests, vet and builds; shared check integration is tracked separately and must be evidenced.
+Go 变更通过 `./scripts/check.sh`（或 `make check`）执行格式、模块校验、vet、竞态测试、临时构建和真实进程 smoke。入口在[源码 PR #1](https://github.com/0ldlight/bf/pull/1)审阅，本机和 PR 使用同一脚本；Jenkins 与 UAT 的实际出口继续由 [BIN-124](https://linear.app/binfloow/issue/BIN-124) / [BIN-125](https://linear.app/binfloow/issue/BIN-125) 取证。
+Run the shared script for formatting, module verification, vet, race tests, builds and process smoke. Local/PR checks share the same entry; Jenkins/UAT evidence remains separately tracked.
 
 ```sh
-go test -race ./...
-go vet ./...
-go build ./...
+./scripts/check.sh
+# or / 或
+make check
 ```
 
 依赖从官方来源选择，记录精确版本、校验与许可；避免不必要的库、占位领域实现和未经批准的全局配置修改。
