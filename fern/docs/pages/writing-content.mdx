@@ -1,89 +1,45 @@
 ---
-title: Write content
-subtitle: Create documentation pages using MDX
+title: 研发规范 / Engineering conventions
 slug: writing-content
 ---
 
-Documentation pages are written in MDX, which combines Markdown with React components. Create `.mdx` files in the `docs/pages/` directory and reference them in your `docs.yml` navigation.
+## 文档与语言 / Documentation and language
 
-## Quick example
+所有项目文档统一维护在此 Fern 仓库。文档、注释、提交说明和 PR 描述提供中文与英文，代码标识符使用英文。完整解释只维护一处，其他页面链接到其规范来源。
+Maintain canonical documents here, with Chinese/English engineering artifacts and English code identifiers. Link to one canonical explanation rather than duplicating it.
 
-Here's a minimal page with frontmatter and Markdown content:
+[文档贡献流程](/editing-your-docs)规定预览和发布；[架构决定](/engineering/architecture)明确已批准与待审阅范围。
+The linked workflows define publication and decision boundaries.
 
-```markdown title="docs/pages/my-page.mdx"
----
-title: Page title
-subtitle: Optional subtitle
-slug: my-page
----
+## 代码与验证 / Code and verification
 
-Your content here. Use standard Markdown formatting like **bold**, *italic*, and `code`.
+先写可失败的行为契约，再实现最小切片并保存真实 RED/GREEN 证据。测试覆盖成功、错误、权限和边界；不新增跳过、不删断言、不降低阈值以通过检查。
+Write a failing behavioral contract before the minimal implementation. Preserve real red/green evidence and never weaken checks to turn them green.
 
-## Headings
+Go 变更需要格式检查、竞态测试、vet 与构建。共享入口由 [BIN-124](https://linear.app/binfloow/issue/BIN-124) 落地，不能在其验证前声明 CI 已就绪。
+Go changes require formatting, race tests, vet and builds; shared check integration is tracked separately and must be evidenced.
 
-Use headings to organize your content.
+```sh
+go test -race ./...
+go vet ./...
+go build ./...
 ```
 
-## Using components
+依赖从官方来源选择，记录精确版本、校验与许可；避免不必要的库、占位领域实现和未经批准的全局配置修改。
+Use official dependencies with pinned versions/checksums/licenses; avoid unnecessary abstractions and placeholder domains.
 
-Fern provides [built-in components](https://buildwithfern.com/learn/docs/writing-content/components/overview) for common documentation patterns. Each example below shows the rendered component followed by the MDX that produces it.
+## 审查与交付 / Review and delivery
 
-### Callouts
+每任务独立分支/worktree；实现者不是唯一审查者。Codex 审查正确性、边界、安全、可读性与验证证据，所有者合并和发布。
+Use isolated branches/worktrees, independent review and owner-controlled merges/releases.
 
-Use callouts to highlight important information.
+PR 描述说明具体行为、验证与限制，关联 Linear 和能力 ID。制品、构建、测试与部署结果按提交摘要追踪。
+PRs link behavior, evidence, limitations, Linear and capability IDs; trace artifacts/tests/deployments to commits.
 
-<Note>
-Highlight important information with callouts.
-</Note>
+## 研究与隐私 / Research and privacy
 
-```jsx title="my-page.mdx"
-<Note>
-Highlight important information with callouts.
-</Note>
-```
+研究输出是行为规范、边界案例和可原创实现的测试契约。安装包、反编译源码、接口原始采样、环境地址与凭据保存在私有资料库。
+Research yields contracts and cases. Keep original packages/decompilation/raw captures/private environments and credentials in the private store.
 
-### Cards
-
-Use cards to link to related pages.
-
-<CardGroup cols={2}>
-  <Card title="Set up navigation" icon="duotone compass" href="/navigation">
-    Structure your docs with tabs, sections, and pages
-  </Card>
-  <Card title="Customize your docs" icon="duotone palette" href="/customization">
-    Change colors, fonts, and layout to match your brand
-  </Card>
-</CardGroup>
-
-```jsx title="my-page.mdx"
-<CardGroup cols={2}>
-  <Card title="Set up navigation" icon="duotone compass" href="/navigation">
-    Structure your docs with tabs, sections, and pages
-  </Card>
-  <Card title="Customize your docs" icon="duotone palette" href="/customization">
-    Change colors, fonts, and layout to match your brand
-  </Card>
-</CardGroup>
-```
-
-## More components
-
-Explore the full set of built-in components and click through to the Fern documentation for detailed usage guides.
-
-<CardGroup cols={2}>
-  <Card
-    title="Component library"
-    icon="duotone puzzle-piece"
-    href="https://buildwithfern.com/learn/docs/writing-content/components/overview"
-  >
-    Browse callouts, cards, tabs, accordions, and more
-  </Card>
-  <Card
-    title="Markdown syntax"
-    icon="duotone text"
-    href="https://buildwithfern.com/learn/docs/writing-content/markdown"
-  >
-    Format text, links, lists, tables, and code blocks
-  </Card>
-</CardGroup>
-
+旧资料中的版本字符串、静态代码、运行观察和推论分别标记，不能把命中文本当成运行证据；完整边界在[研究索引](/research/index)。
+Distinguish version labels, static evidence, runtime observations and inference; a text match is not observed behavior.

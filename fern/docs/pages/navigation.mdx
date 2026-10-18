@@ -1,72 +1,22 @@
 ---
-title: Set up navigation
-subtitle: Configure tabs, sections, and pages in your `docs.yml` file
+title: 文档导航 / Documentation map
 slug: navigation
 ---
 
-The `docs.yml` file configures your whole documentation site, from visual styling to navigation. Navigation covers the tabs, sections, and pages that make up your site's structure. These settings determine what readers see in the sidebar and top bar, and how they move between pages.
+## 项目与研发 / Project and engineering
 
-## Quick example
+- [项目概览](/welcome) / Project overview
+- [已确认需求](/project/requirements) / Confirmed requirements
+- [架构决定](/engineering/architecture)与[启动提案](/engineering/startup-proposal) / Decisions and proposal
+- [P0 计划](/engineering/p0-plan)与[接续流程](/engineering/continuation) / Plan and continuation
+- [研发规范](/writing-content)与[文档流程](/editing-your-docs) / Engineering and documentation workflows
 
-Here's a minimal example showing navigation structure in `docs.yml`:
+## 证据与接口 / Evidence and interfaces
 
-```yaml title="docs.yml"
-navigation:
-  - section: Getting started
-    contents:
-      - page: Introduction
-        path: docs/pages/intro.mdx
-      - page: Quickstart
-        path: docs/pages/quickstart.mdx
-  - api: API Reference
-```
+- [能力矩阵](/research/capability-matrix) / Capability matrix
+- [研究索引](/research/index) / Research/provenance index
+- [API 状态](/api-reference) / API implementation/verification status
+- [支持与问题](/support) / Project support and issues
 
-## Complete navigation options
-
-Explore the navigation options below and click through to the Fern documentation for detailed configuration guides.
-
-<CardGroup cols={2}>
-  <Card
-    title="Sections and pages"
-    icon="duotone list"
-    href="https://buildwithfern.com/learn/docs/configuration/navigation#sections-contents-pages-and-folders"
-  >
-    Organize content into sections with pages and folders
-  </Card>
-  <Card
-    title="Tabs"
-    icon="duotone folder-open"
-    href="https://buildwithfern.com/learn/docs/configuration/tabs"
-  >
-    Create top-level navigation groups
-  </Card>
-  <Card
-    title="Versions"
-    icon="duotone code-branch"
-    href="https://buildwithfern.com/learn/docs/configuration/versions"
-  >
-    Add version switching for your documentation
-  </Card>
-  <Card
-    title="Products"
-    icon="duotone boxes-stacked"
-    href="https://buildwithfern.com/learn/docs/configuration/products"
-  >
-    Support multiple products in one site
-  </Card>
-  <Card
-    title="API reference"
-    icon="duotone code"
-    href="https://buildwithfern.com/learn/docs/api-references/generate-api-ref"
-  >
-    Auto-generate API documentation from your spec
-  </Card>
-  <Card
-    title="Changelogs"
-    icon="duotone clock-rotate-left"
-    href="https://buildwithfern.com/learn/docs/configuration/changelogs"
-  >
-    Add a changelog section to your docs
-  </Card>
-</CardGroup>
-
+本页是跨主题索引，不是第二份任务状态表；进度与依赖使用 [Linear](https://linear.app/binfloow/project/binflow-2ad2bc04f63e)。
+This is a topic index; task/dependency state belongs in Linear.

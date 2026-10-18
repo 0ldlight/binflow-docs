@@ -30,7 +30,7 @@ Linear is the task/approval authority; this page records sequence and risks rath
 | [BIN-122 域名验收 / Domain](https://linear.app/binfloow/issue/BIN-122) | BIN-121 | DNS/TLS/页面与部署来源 / Live domain evidence |
 | [BIN-123 Go 健康切片 / Health](https://linear.app/binfloow/issue/BIN-123) | 无 / None | 单元/竞态、构建、进程 smoke / Tests, build, runtime |
 | [BIN-124 共享检查与 CI / Checks](https://linear.app/binfloow/issue/BIN-124) | BIN-123 | 本机/PR 同一检查入口、Jenkins 任务 / Shared checks and CI execution |
-| [BIN-125 CircleCI/UAT](https://linear.app/binfloow/issue/BIN-125) | BIN-124 | 构建、部署、失败与恢复证据 / Delivery and failure evidence |
+| [BIN-125 CircleCI/UAT](https://linear.app/binfloow/issue/BIN-125) | BIN-124 | Jenkins 制品输入、部署、失败与恢复证据 / Artifact consumption and recovery |
 | [BIN-126 Worker 接续 / Handover](https://linear.app/binfloow/issue/BIN-126) | BIN-123 | 合同、槽位、验证、提交、PR与恢复 / Durable reviewed task |
 | [BIN-127 出口审阅 / Exit review](https://linear.app/binfloow/issue/BIN-127) | 上述出口 / Above exits | 所有者确认与显式未完成项 / Owner review and visible gaps |
 
@@ -46,8 +46,8 @@ Linear is the task/approval authority; this page records sequence and risks rath
 ## 风险与控制 / Risks and controls
 
 - 试用授权于 2026-11-03 到期；优先采集目标版本证据。 Baseline trial expires on 2026-11-03; prioritize reproducible evidence.
-- 旧反编译资料声明为 7.161.24 且存在内部版本冲突，只作线索，不能代替 7.161.26。 Older recovered material is a lead, not target evidence.
+- 旧反编译资料声明为 7.161.24，多层版本标记待核实归属；只作线索，不能代替 7.161.26。 Older recovered material is a lead, not target evidence.
 - 其他主机已由所有者确认停止；当前 Mac 接管，所有 GLM-5.3 角色/重试最多共用三个槽位。 Owner confirmed host handover; all roles/retries share three slots.
 - 失联或租约超时不等于进程结束；恢复前核对实际进程。 A timeout does not establish process termination.
 - 原版资料、环境配置与凭据保持私有；公开文档只引用制品标识与摘要。 Preserve private research/credentials and publish only portable references.
-- CircleCI 尚待账户接入，UAT runtime、Jenkins 动态 Agent 和文档自定义域名需要实际验证。 Account/runtime/agent/domain setup requires observed evidence.
+- Jenkins 构建制品、CircleCI 仅部署 UAT（所有者 2026-10-19 确认）；UAT runtime、Jenkins Agent 和自定义域名仍需实际验证。 Jenkins builds; CircleCI only deploys UAT. Runtime/agent/domain acceptance requires observed evidence.

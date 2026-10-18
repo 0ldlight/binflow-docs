@@ -10,52 +10,61 @@ layout:
   tabs-placement: header
 tabs:
   home:
-    display-name: Docs
+    display-name: 文档 / Docs
     icon: home
   API Reference:
-    display-name: API Reference
+    display-name: API 状态 / Status
     icon: puzzle
 navigation:
   - tab: home
     layout:
-      - section: Get started
+      - section: 项目 / Project
         contents:
-          - page: Welcome
+          - page: BinFlow
             path: docs/pages/welcome.mdx
-            icon: fa-duotone fa-house
-          - page: Edit your docs
-            path: docs/pages/editing-your-docs.mdx
-            icon: fa-duotone fa-pen-to-square
-          - page: Write content
-            path: docs/pages/writing-content.mdx
-            icon: fa-duotone fa-file-lines
-          - page: Set up navigation
+          - page: 已确认需求 / Requirements
+            path: docs/pages/project/requirements.mdx
+          - page: 项目状态 / Status
+            path: docs/pages/project/status.mdx
+          - page: 阅读导航 / Reading guide
             path: docs/pages/navigation.mdx
-            icon: fa-duotone fa-sitemap
-          - page: Customize your docs
-            path: docs/pages/customization.mdx
-            icon: fa-duotone fa-palette
-          - page: Support
+          - page: 支持 / Support
             path: docs/pages/support.mdx
-            icon: fa-duotone fa-headset
-      - section: Changelog
+      - section: 研发 / Engineering
         contents:
-          - changelog: docs/changelog
-      - section: Engineering / 研发
-        contents:
-          - page: P0 foundation / P0 基础
+          - page: P0 计划 / Foundation
             path: docs/pages/engineering/p0-plan.mdx
+          - page: 架构决定 / Architecture
+            path: docs/pages/engineering/architecture.mdx
+          - page: 启动提案 / Startup proposal
+            path: docs/pages/engineering/startup-proposal.mdx
+          - page: 研发规范 / Conventions
+            path: docs/pages/writing-content.mdx
+          - page: 接续研发 / Continuation
+            path: docs/pages/engineering/continuation.mdx
+          - page: 文档贡献 / Documentation
+            path: docs/pages/editing-your-docs.mdx
+      - section: 兼容研究 / Compatibility research
+        contents:
+          - page: 能力矩阵 v1 / Matrix
+            path: docs/pages/research/capability-matrix.mdx
+          - page: 研究索引 / Provenance
+            path: docs/pages/research/index.mdx
   - tab: API Reference
     layout:
-      - section: Overview
-        contents:
-          - page: API reference
-            path: docs/pages/api-reference-overview.mdx
-            icon: fa-duotone fa-book
-      - api: Swagger Plant Store - OpenAPI 3.1
-        api-name: example-openapi
-      - api: Plant Store AsyncAPI
-        api-name: example-asyncapi
+      - page: API 状态 / API status
+        path: docs/pages/api-reference-overview.mdx
+redirects:
+  - source: /customization
+    destination: /editing-your-docs
+  - source: /docs/changelog/changelog
+    destination: /project/status
+  - source: /docs/changelog/changelog/:entry*
+    destination: /project/status
+  - source: /changelog
+    destination: /project/status
+  - source: /changelog/:entry*
+    destination: /project/status
 navbar-links:
   - type: filled
     text: Edit
@@ -77,7 +86,7 @@ logo:
   dark: docs/assets/logo-light.svg
   light: docs/assets/logo-light.svg
   height: 20
-  href: https://buildwithfern.com
+  href: https://docs.binflow.org
 favicon: docs/assets/favicon.svg
 css:
   - styles.css
