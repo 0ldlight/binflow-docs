@@ -38,6 +38,8 @@ navigation:
             path: docs/pages/engineering/architecture.mdx
           - page: 启动提案 / Startup proposal
             path: docs/pages/engineering/startup-proposal.mdx
+          - page: UAT 提案 / UAT proposal
+            path: docs/pages/engineering/uat-proposal.mdx
           - page: 研发规范 / Conventions
             path: docs/pages/writing-content.mdx
           - page: 接续研发 / Continuation
