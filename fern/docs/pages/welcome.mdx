@@ -1,69 +1,39 @@
 ---
-title: Welcome to binflow!
-subtitle: Everything you need to build the best developer experience.
+title: BinFlow
+subtitle: 制品库研发文档 / Artifact repository engineering documentation
 slug: welcome
-hide-page-actions: true
-hide-nav-links: true
-hide-feedback: true
-layout: overview
 ---
 
-<div className="welcome-hero-tint">
-  <img src="../assets/welcome-light.jpg" className="block dark:hidden" style={{pointerEvents:'none',cursor:'default',transform:'none',transition:'none',animation:'none'}} />
-  <img src="../assets/welcome-dark.jpg" className="hidden dark:block" style={{pointerEvents:'none',cursor:'default',transform:'none',transition:'none',animation:'none'}} />
-</div>
+BinFlow 是使用 Go 与 TypeScript 开发的制品库项目，目标基线为 Artifactory 7.161.26 Enterprise+ 及其必需的平台服务。
+BinFlow is a Go and TypeScript artifact repository project targeting Artifactory 7.161.26 Enterprise+ and its required platform services.
 
-## Products
+<Note>
+当前处于 P0：基线、研发体系和首条可验证任务。产品功能、客户端兼容、HA 与性能均须逐项取得证据后才能声明完成。
+The project is in P0: baseline research, engineering foundations and the first verified task. Product capabilities, client parity, HA and performance require item-specific evidence before being declared complete.
+</Note>
 
-<CardGroup cols={3}>
-  <Card title="Payments" icon="duotone credit-card">
-    Accept one-time and recurring payments with a simple, unified API
-  </Card>
-  <Card title="Subscriptions" icon="duotone arrows-repeat">
-    Create and manage recurring billing plans with built-in proration and trials
-  </Card>
-  <Card title="Invoicing" icon="duotone file-invoice-dollar">
-    Generate, send, and track invoices automatically
-  </Card>
-</CardGroup>
+## 从哪里开始 / Start here
 
-## Get started
+- [P0 计划与依赖 / P0 plan and dependencies](/engineering/p0-plan) 说明当前阶段的验收与执行顺序。
+  The plan defines the current exit criteria and execution order.
+- [项目源码 / Product source](https://github.com/0ldlight/bf) 保存原创实现；[文档源码 / Documentation source](https://github.com/0ldlight/binflow-docs) 是文档的维护入口。
+  Product and documentation sources have separate reviewable repositories.
+- [Linear 项目 / Linear project](https://linear.app/binfloow/project/binflow-2ad2bc04f63e) 跟踪任务、依赖、审批与阻塞。
+  Linear tracks tasks, dependencies, approvals and blockers.
 
-<Steps>
-<Step title="Install the SDK">
+## 已确认的技术方向 / Approved technical direction
 
-One SDK gives you access to Payments, Subscriptions, and Invoicing. 
-<CodeBlocks>
-  ```bash title="npm"
-  npm install @acme/sdk
-  ```
+- Go `net/http` + chi，`database/sql` 与领域存储接口。
+  Go HTTP/chi and explicit database/domain-storage boundaries.
+- PostgreSQL 作为开发默认，多数据库兼容仍在最终范围内。
+  PostgreSQL is the development default; multiple database engines remain required.
+- React + TypeScript + Vite + shadcn/ui，支持中文、英文、主题和键盘/移动端操作。
+  The approved frontend direction supports both languages, themes, keyboard and mobile workflows.
 
-  ```bash title="pip"
-  pip install acme-sdk
-  ```
+这些方向于 2026-10-19 由所有者批准。商业许可和运行许可证细则仍待单独审阅。
+The owner approved these directions on 2026-10-19. Commercial/source licensing and runtime entitlement rules remain separate decisions.
 
-  ```bash title="go"
-  go get github.com/acme/acme-go
-  ```
-</CodeBlocks>
+## 阅读验证状态 / Read the evidence state
 
-</Step>
-<Step title="Authenticate">
-
-Create an API key from the Acme Dashboard and add it to your environment:
-
-```bash
-export ACME_API_KEY="sk_live_..."
-```
-
-</Step>
-<Step title="Explore the docs">
-
-You're ready to go. Dive deeper into the platform:
-
-- [API reference](/api-reference) — browse all available endpoints
-- [Write content](/writing-content) — author pages with MDX and components
-- [Edit your docs](/editing-your-docs) — customize content, styling, and structure
-
-</Step>
-</Steps>
+需求、方案和已验证能力是不同状态。文档与 CI 发布成功不意味着产品功能已实现，也不代表安装包已可供生产使用。
+Requirements, proposals and verified capabilities are distinct states. Successful documentation/CI publication does not establish implemented features or production-ready packages.

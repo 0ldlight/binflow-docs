@@ -3,7 +3,7 @@
 instances:
   - url: binflow.docs.buildwithfern.com
     custom-domain: docs.binflow.org
-title: binflow | Documentation
+title: BinFlow | Documentation / 文档
 layout:
   searchbar-placement: header
   page-width: full
@@ -41,6 +41,10 @@ navigation:
       - section: Changelog
         contents:
           - changelog: docs/changelog
+      - section: Engineering / 研发
+        contents:
+          - page: P0 foundation / P0 基础
+            path: docs/pages/engineering/p0-plan.mdx
   - tab: API Reference
     layout:
       - section: Overview
