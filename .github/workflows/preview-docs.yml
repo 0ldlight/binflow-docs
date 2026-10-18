@@ -25,9 +25,16 @@ jobs:
         env:
           FERN_TOKEN: ${{ secrets.FERN_TOKEN }}
         run: |
-          OUTPUT=$(fern generate --docs --preview 2>&1) || true
+          if ! OUTPUT=$(fern generate --docs --preview 2>&1); then
+            echo "$OUTPUT"
+            exit 1
+          fi
           echo "$OUTPUT"
           URL=$(echo "$OUTPUT" | grep -oP 'Published docs to \K.*(?= \()')
+          if [ -z "$URL" ]; then
+            echo "Fern did not return a preview URL" >&2
+            exit 1
+          fi
           echo "Preview URL: $URL"
           echo "🌿 Preview your docs: $URL" > preview_url.txt
 
