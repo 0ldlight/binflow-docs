@@ -1,12 +1,12 @@
 ---
-title: P0 UAT 部署提案 / UAT proposal
+title: P0 UAT 部署方案 / UAT design
 slug: engineering/uat-proposal
 ---
 
-状态：待所有者审阅，尚未执行主机配置或部署。Jenkins 构建、CircleCI 仅部署的职责已获确认；本页仅提议 P0 健康切片的运行与制品交付方式。
-Status: awaiting owner review; no host provisioning/deployment has run. Jenkins/CircleCI responsibilities are confirmed; this proposal scopes the P0 health slice runtime and transport.
+状态：所有者于 2026-10-19 批准本 P0 方案。按以下范围实施；批准不代表部署或恢复验收已完成。
+Status: the owner approved this P0 design on 2026-10-19. Implementation and deployment/recovery acceptance still require evidence.
 
-## 建议方案 / Recommended design
+## 已批准方案 / Approved design
 
 1. Jenkins 动态 Agent 执行共享检查，构建 Linux amd64 静态 Go 二进制，输出以完整提交摘要命名的压缩包及 SHA-256 sidecar；在 Jenkins 归档并指纹追踪。
    Jenkins checks and builds a static Linux binary, archives commit-addressed packages and SHA-256 sidecars.
@@ -24,5 +24,5 @@ Status: awaiting owner review; no host provisioning/deployment has run. Jenkins/
 先在临时目录测试摘要不符、非法包路径、重复版本和健康失败的拒绝/恢复，再执行一次受控 UAT 部署，确认 HTTPS、进程身份、版本摘要和恢复路径。只对 P0 内部健康入口验收，不宣称产品功能或生产可用。
 Test invalid inputs and recovery in isolation before one controlled UAT run. Verify HTTPS, identity and digests without claiming product readiness.
 
-本方案不批准完整产品的最终 UAT 拓扑。原有 Compose/PostgreSQL 提案继续保留，待产品存储与界面就绪后比较；若所有者偏好直接使用 Compose，本次部署方案据此改写后实施。
-This does not settle the final product topology. The earlier Compose/PostgreSQL proposal remains open and can replace this P0 runtime following owner direction.
+本方案不批准完整产品的最终 UAT 拓扑。原有 Compose/PostgreSQL 提案继续保留，待产品存储与界面就绪后比较；本期采用上述 systemd/Caddy 方案。
+This does not settle the final product topology. The earlier Compose/PostgreSQL proposal remains open for later product-topology review.
