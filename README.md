@@ -1,21 +1,7 @@
-<br/>
-<div align="center">
-  <a href="https://www.buildwithfern.com/?utm_source=github&utm_medium=readme&utm_campaign=fern&utm_content=logo">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="/fern/docs/assets/fern-logo-white.svg">
-      <source media="(prefers-color-scheme: light)" srcset="/fern/docs/assets/fern-logo-primary.svg">
-      <img alt="logo" src="/fern/docs/assets/fern-logo-primary.svg" height="50" align="center">
-    </picture>
-  </a>
-  
-  <br/>
-  
-# Docs starter template for FTUX
+# BinFlow 使用文档 / Usage documentation
 
-This is the internal starter template cloned when a user creates a new docs site through the FTUX dashboard flow. It ships with a sample Plant Store API so new users have working documentation out of the box.
+[docs.binflow.org](https://docs.binflow.org) 的 Fern 源码，仅维护 BinFlow 使用文档：产品指南、已验证的安装与管理员操作、已支持 API 和真实发布说明。尚未实现的能力不写成可用指南。
+Fern sources for BinFlow usage documentation only: verified user/admin guides, supported API reference and real release notes.
 
-The docs starter template for CLI users is still at [fern-api/docs-starter](https://github.com/fern-api/docs-starter).
-
-## Making changes to this template
-
-Any changes here affect what every new user gets when they create a docs site from the dashboard. Test locally with `fern docs dev` and `fern check` before merging.
+需求、架构、研发规范、计划、研究与交接维护在 [BinFlow 源码仓库的 docs/](https://github.com/0ldlight/bf/tree/37cc1120090aad6e5002fd221784d835379d9de2/docs)。本次范围修订仍在 PR 审阅；主分支合并与正式发布由所有者决定。
+Engineering documents live in source `docs/`. This scope revision is under review; the owner controls merges and publication.

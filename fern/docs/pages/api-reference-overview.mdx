@@ -1,20 +1,10 @@
 ---
-title: 接口状态 / API status
+title: API 参考 / API reference
 slug: api-reference
 ---
 
-## 当前范围 / Current scope
+目前尚无已发布并验证的 BinFlow 产品 API，因此暂不提供调用示例或兼容性保证。
+No verified BinFlow product API has been released, so request examples and compatibility guarantees are not available yet.
 
-REST、AQL、包客户端协议、JFrog CLI 与 CI 集成均属于最终范围；当前没有已通过全功能兼容验收的 BinFlow API。
-The final scope includes REST/AQL, package protocols, JFrog CLI and CI integrations. No BinFlow API currently has full-parity acceptance.
-
-首个工程任务 [BIN-123](https://linear.app/binfloow/issue/BIN-123) 建立内部健康检查 `/healthz` 的 GET/HEAD 与方法拒绝契约。它用于研发 smoke，不属于 Artifactory API 兼容证明。
-The first engineering task defines internal health/method contracts for smoke checks; it is not an Artifactory compatibility assertion.
-
-## 后续参考生成 / Future reference generation
-
-版本冻结的原版行为、错误与权限证据先进入[能力矩阵](/research/capability-matrix)，再形成原创 API 规范与契约测试。只有实现和验证均通过，才在此发布已支持接口和明确差异。
-Freeze baseline behavior/errors/authorization before writing original specifications and contracts. Publish support only after implementation and verification.
-
-原始接口采样留在私有资料库，公开规范只包含可公开的原创描述。此站不将 Fern 入门模板的 Plant Store API 当成 BinFlow 接口。
-Keep raw captures private and publish original descriptions; template Plant Store APIs are not BinFlow interfaces.
+已支持接口的请求、响应、认证方式、错误及版本限制将在相应版本发布后补充。
+Request/response formats, authentication, errors and version limits will be documented with supported releases.

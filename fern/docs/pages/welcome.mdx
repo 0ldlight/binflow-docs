@@ -1,39 +1,16 @@
 ---
 title: BinFlow
-subtitle: 制品库研发文档 / Artifact repository engineering documentation
 slug: welcome
 ---
 
-BinFlow 是使用 Go 与 TypeScript 开发的制品库项目，目标基线为 Artifactory 7.161.26 Enterprise+ 及其必需的平台服务。
-BinFlow is a Go and TypeScript artifact repository project targeting Artifactory 7.161.26 Enterprise+ and its required platform services.
+BinFlow 是正在开发中的制品仓库。
+BinFlow is an artifact repository under development.
 
 <Note>
-当前处于 P0：基线、研发体系和首条可验证任务。产品功能、客户端兼容、HA 与性能均须逐项取得证据后才能声明完成。
-The project is in P0: baseline research, engineering foundations and the first verified task. Product capabilities, client parity, HA and performance require item-specific evidence before being declared complete.
+目前尚无正式发布的可安装产品版本。安装、仓库配置、制品上传下载与 API 指南将在相应功能完成验证后提供。
+No installable product release is available yet. Guides for installation, repository configuration, artifact transfers and APIs will follow verified functionality.
 </Note>
 
-## 从哪里开始 / Start here
-
-- [P0 计划与依赖 / P0 plan and dependencies](/engineering/p0-plan) 说明当前阶段的验收与执行顺序。
-  The plan defines the current exit criteria and execution order.
-- [项目源码 / Product source](https://github.com/0ldlight/bf) 保存原创实现；[文档源码 / Documentation source](https://github.com/0ldlight/binflow-docs) 是文档的维护入口。
-  Product and documentation sources have separate reviewable repositories.
-- [Linear 项目 / Linear project](https://linear.app/binfloow/project/binflow-2ad2bc04f63e) 跟踪任务、依赖、审批与阻塞。
-  Linear tracks tasks, dependencies, approvals and blockers.
-
-## 已确认的技术方向 / Approved technical direction
-
-- Go `net/http` + chi，`database/sql` 与领域存储接口。
-  Go HTTP/chi and explicit database/domain-storage boundaries.
-- PostgreSQL 作为开发默认，多数据库兼容仍在最终范围内。
-  PostgreSQL is the development default; multiple database engines remain required.
-- React + TypeScript + Vite + shadcn/ui，支持中文、英文、主题和键盘/移动端操作。
-  The approved frontend direction supports both languages, themes, keyboard and mobile workflows.
-
-这些方向于 2026-10-19 由所有者批准。商业许可和运行许可证细则仍待单独审阅。
-The owner approved these directions on 2026-10-19. Commercial/source licensing and runtime entitlement rules remain separate decisions.
-
-## 阅读验证状态 / Read the evidence state
-
-需求、方案和已验证能力是不同状态。文档与 CI 发布成功不意味着产品功能已实现，也不代表安装包已可供生产使用。
-Requirements, proposals and verified capabilities are distinct states. Successful documentation/CI publication does not establish implemented features or production-ready packages.
+- [API 参考 / API reference](/api-reference)：当前可用状态 / Current availability.
+- [发布说明 / Release notes](/releases)：正式版本记录 / Product release history.
+- [问题反馈 / Support](/support)：报告使用或文档问题 / Report usage or documentation issues.

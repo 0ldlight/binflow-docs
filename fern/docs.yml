@@ -10,67 +10,38 @@ layout:
   tabs-placement: header
 tabs:
   home:
-    display-name: 文档 / Docs
+    display-name: 使用文档 / User guide
     icon: home
-  API Reference:
-    display-name: API 状态 / Status
-    icon: puzzle
 navigation:
   - tab: home
     layout:
-      - section: 项目 / Project
-        contents:
-          - page: BinFlow
-            path: docs/pages/welcome.mdx
-          - page: 已确认需求 / Requirements
-            path: docs/pages/project/requirements.mdx
-          - page: 项目状态 / Status
-            path: docs/pages/project/status.mdx
-          - page: 阅读导航 / Reading guide
-            path: docs/pages/navigation.mdx
-          - page: 支持 / Support
-            path: docs/pages/support.mdx
-      - section: 研发 / Engineering
-        contents:
-          - page: P0 计划 / Foundation
-            path: docs/pages/engineering/p0-plan.mdx
-          - page: 架构决定 / Architecture
-            path: docs/pages/engineering/architecture.mdx
-          - page: 启动提案 / Startup proposal
-            path: docs/pages/engineering/startup-proposal.mdx
-          - page: UAT 方案 / UAT design
-            path: docs/pages/engineering/uat-proposal.mdx
-          - page: 研发规范 / Conventions
-            path: docs/pages/writing-content.mdx
-          - page: 接续研发 / Continuation
-            path: docs/pages/engineering/continuation.mdx
-          - page: 文档贡献 / Documentation
-            path: docs/pages/editing-your-docs.mdx
-      - section: 兼容研究 / Compatibility research
-        contents:
-          - page: 能力矩阵 v1 / Matrix
-            path: docs/pages/research/capability-matrix.mdx
-          - page: 研究索引 / Provenance
-            path: docs/pages/research/index.mdx
-  - tab: API Reference
-    layout:
-      - page: API 状态 / API status
+      - page: BinFlow
+        path: docs/pages/welcome.mdx
+      - page: API 参考 / API reference
         path: docs/pages/api-reference-overview.mdx
+      - page: 发布说明 / Release notes
+        path: docs/pages/releases.mdx
+      - page: 问题反馈 / Support
+        path: docs/pages/support.mdx
 redirects:
   - source: /customization
-    destination: /editing-your-docs
+    destination: https://github.com/0ldlight/bf/blob/37cc1120090aad6e5002fd221784d835379d9de2/docs/DOCUMENTATION.md
+  - source: /editing-your-docs
+    destination: https://github.com/0ldlight/bf/blob/37cc1120090aad6e5002fd221784d835379d9de2/docs/DOCUMENTATION.md
+  - source: /writing-content
+    destination: https://github.com/0ldlight/bf/blob/37cc1120090aad6e5002fd221784d835379d9de2/docs/ENGINEERING-CONVENTIONS.md
+  - source: /navigation
+    destination: https://github.com/0ldlight/bf/blob/37cc1120090aad6e5002fd221784d835379d9de2/README.md
+  - source: /project/status
+    destination: /releases
   - source: /docs/changelog/changelog
-    destination: /project/status
+    destination: /releases
   - source: /docs/changelog/changelog/:entry*
-    destination: /project/status
+    destination: /releases
   - source: /changelog
-    destination: /project/status
+    destination: /releases
   - source: /changelog/:entry*
-    destination: /project/status
-navbar-links:
-  - type: filled
-    text: Edit
-    url: https://dashboard.buildwithfern.com
+    destination: /releases
 colors:
   accent-primary:
     light: "#008700"
@@ -91,7 +62,6 @@ logo:
   href: https://docs.binflow.org
 favicon: docs/assets/favicon.svg
 css:
-  - styles.css
   - docs/assets/onboarding-theme.css
 typography:
   headingsFont:
