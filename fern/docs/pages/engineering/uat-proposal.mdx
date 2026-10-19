@@ -19,6 +19,19 @@ Status: the owner approved this P0 design on 2026-10-19. Implementation and depl
 5. 部署前记录上一个有效版本；新版本启动/健康失败时恢复该版本并保留失败证据。首次安装失败不能伪称“回滚成功”。后续引入数据库前另行审阅结构兼容及恢复策略。
    Record the previous release and restore it after a failed activation. A failed first installation has no previous release to roll back to. Database rollout requires a separate compatibility decision.
 
+## CI 身份与 Secret / CI identities and secrets
+
+| 身份 / Identity | 使用方 / Used by | 允许操作 / Allowed operation |
+| --- | --- | --- |
+| `binflow-upload` | Jenkins | 通过固定上传程序接收制品到 staging / Stage artifacts through the fixed upload helper |
+| `binflow-deploy` | CircleCI | 通过固定部署程序校验、切换和恢复版本 / Validate, activate and recover through the fixed deployment helper |
+
+两者使用不同的专用 SSH Key；服务器通过 root 所有的 `authorized_keys` 强制命令限制能力，禁止交互式登录、任意远程命令与转发。部署账号的 sudo 规则只允许固定助手和固定参数，运行中的 BinFlow 仍使用无登录权限的非 root 身份。安装后须实际验证这些限制。
+Use separate SSH keys and root-owned forced-command rules, with no interactive shell, arbitrary remote commands or forwarding. The deployment account may elevate only the fixed helper invocation; BinFlow runs as a separate non-root service identity. Verify these restrictions after installation.
+
+CircleCI 的 `BINFLOW_UAT_DEPLOY_KEY_B64` 保存部署私钥的单行 Base64 表示。Base64 仅便于表单保存，不是加密；该值必须按私钥保护。`BINFLOW_UAT_KNOWN_HOSTS` 保存经受信连接核实的服务器公钥，用于拒绝连接错误或被替换的主机。不要把私钥、Secret 值或个人 root Key 写入源码、文档、任务或日志。
+CircleCI stores the private deployment key as `BINFLOW_UAT_DEPLOY_KEY_B64`; Base64 is formatting, not encryption. `BINFLOW_UAT_KNOWN_HOSTS` pins the independently verified server public key. Keep private values and personal root keys out of source, documentation, tasks and logs.
+
 ## 验收边界 / Acceptance boundary
 
 先在临时目录测试摘要不符、非法包路径、重复版本和健康失败的拒绝/恢复，再执行一次受控 UAT 部署，确认 HTTPS、进程身份、版本摘要和恢复路径。只对 P0 内部健康入口验收，不宣称产品功能或生产可用。
