@@ -29,8 +29,11 @@ Status: the owner approved this P0 design on 2026-10-19. Implementation and depl
 两者使用不同的专用 SSH Key；服务器通过 root 所有的 `authorized_keys` 强制命令限制能力，禁止交互式登录、任意远程命令与转发。部署账号的 sudo 规则只允许固定助手和固定参数，运行中的 BinFlow 仍使用无登录权限的非 root 身份。安装后须实际验证这些限制。
 Use separate SSH keys and root-owned forced-command rules, with no interactive shell, arbitrary remote commands or forwarding. The deployment account may elevate only the fixed helper invocation; BinFlow runs as a separate non-root service identity. Verify these restrictions after installation.
 
-CircleCI 的 `BINFLOW_UAT_DEPLOY_KEY_B64` 保存部署私钥的单行 Base64 表示。Base64 仅便于表单保存，不是加密；该值必须按私钥保护。`BINFLOW_UAT_KNOWN_HOSTS` 保存经受信连接核实的服务器公钥，用于拒绝连接错误或被替换的主机。不要把私钥、Secret 值或个人 root Key 写入源码、文档、任务或日志。
-CircleCI stores the private deployment key as `BINFLOW_UAT_DEPLOY_KEY_B64`; Base64 is formatting, not encryption. `BINFLOW_UAT_KNOWN_HOSTS` pins the independently verified server public key. Keep private values and personal root keys out of source, documentation, tasks and logs.
+CircleCI 将部署私钥保存在项目的 **SSH Keys**，Hostname 限定为 `uat.binflow.org`。`BINFLOW_UAT_SSH_KEY_FINGERPRINT` 环境变量只保存该 Key 的 SHA-256 指纹；`BINFLOW_UAT_KNOWN_HOSTS` 保存经受信连接核实的服务器公钥。源码、环境变量和日志均不保存部署私钥或 root 密码。
+Store the private deployment key in project **SSH Keys**, scoped to `uat.binflow.org`. `BINFLOW_UAT_SSH_KEY_FINGERPRINT` holds its SHA-256 fingerprint, while `BINFLOW_UAT_KNOWN_HOSTS` pins the independently verified server public key. Keep the deployment private key and root password out of source, environment variables and logs.
+
+按 [CircleCI 官方约定](https://circleci.com/docs/guides/integration/add-ssh-key/)，`add_ssh_keys.fingerprints` 使用固定指纹，不支持环境变量展开。配置先精确加载所需 Key，再将该 Key 的实际指纹与环境变量核对；任一不符即失败。SSH 使用明确的身份文件与固定服务器公钥，避免选中项目内其他 Key。轮换 Key 时同步更新 SSH Keys、配置中的固定指纹与指纹环境变量。
+CircleCI requires literal fingerprints in `add_ssh_keys`. Load the selected key, verify its actual fingerprint against the environment variable and fail on mismatch. Use its explicit identity file and pinned server key. Rotate the stored key, configured fingerprint and fingerprint variable together.
 
 ## 验收边界 / Acceptance boundary
 
