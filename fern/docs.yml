@@ -3,59 +3,45 @@
 instances:
   - url: binflow.docs.buildwithfern.com
     custom-domain: docs.binflow.org
-title: binflow | Documentation
+title: BinFlow | Documentation / 文档
 layout:
   searchbar-placement: header
   page-width: full
   tabs-placement: header
 tabs:
   home:
-    display-name: Docs
+    display-name: 使用文档 / User guide
     icon: home
-  API Reference:
-    display-name: API Reference
-    icon: puzzle
 navigation:
   - tab: home
     layout:
-      - section: Get started
-        contents:
-          - page: Welcome
-            path: docs/pages/welcome.mdx
-            icon: fa-duotone fa-house
-          - page: Edit your docs
-            path: docs/pages/editing-your-docs.mdx
-            icon: fa-duotone fa-pen-to-square
-          - page: Write content
-            path: docs/pages/writing-content.mdx
-            icon: fa-duotone fa-file-lines
-          - page: Set up navigation
-            path: docs/pages/navigation.mdx
-            icon: fa-duotone fa-sitemap
-          - page: Customize your docs
-            path: docs/pages/customization.mdx
-            icon: fa-duotone fa-palette
-          - page: Support
-            path: docs/pages/support.mdx
-            icon: fa-duotone fa-headset
-      - section: Changelog
-        contents:
-          - changelog: docs/changelog
-  - tab: API Reference
-    layout:
-      - section: Overview
-        contents:
-          - page: API reference
-            path: docs/pages/api-reference-overview.mdx
-            icon: fa-duotone fa-book
-      - api: Swagger Plant Store - OpenAPI 3.1
-        api-name: example-openapi
-      - api: Plant Store AsyncAPI
-        api-name: example-asyncapi
-navbar-links:
-  - type: filled
-    text: Edit
-    url: https://dashboard.buildwithfern.com
+      - page: BinFlow
+        path: docs/pages/welcome.mdx
+      - page: API 参考 / API reference
+        path: docs/pages/api-reference-overview.mdx
+      - page: 发布说明 / Release notes
+        path: docs/pages/releases.mdx
+      - page: 问题反馈 / Support
+        path: docs/pages/support.mdx
+redirects:
+  - source: /customization
+    destination: https://github.com/0ldlight/bf/blob/37cc1120090aad6e5002fd221784d835379d9de2/docs/DOCUMENTATION.md
+  - source: /editing-your-docs
+    destination: https://github.com/0ldlight/bf/blob/37cc1120090aad6e5002fd221784d835379d9de2/docs/DOCUMENTATION.md
+  - source: /writing-content
+    destination: https://github.com/0ldlight/bf/blob/37cc1120090aad6e5002fd221784d835379d9de2/docs/ENGINEERING-CONVENTIONS.md
+  - source: /navigation
+    destination: https://github.com/0ldlight/bf/blob/37cc1120090aad6e5002fd221784d835379d9de2/README.md
+  - source: /project/status
+    destination: /releases
+  - source: /docs/changelog/changelog
+    destination: /releases
+  - source: /docs/changelog/changelog/:entry*
+    destination: /releases
+  - source: /changelog
+    destination: /releases
+  - source: /changelog/:entry*
+    destination: /releases
 colors:
   accent-primary:
     light: "#008700"
@@ -73,10 +59,9 @@ logo:
   dark: docs/assets/logo-light.svg
   light: docs/assets/logo-light.svg
   height: 20
-  href: https://buildwithfern.com
+  href: https://docs.binflow.org
 favicon: docs/assets/favicon.svg
 css:
-  - styles.css
   - docs/assets/onboarding-theme.css
 typography:
   headingsFont:

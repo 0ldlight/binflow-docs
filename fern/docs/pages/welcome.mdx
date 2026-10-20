@@ -1,69 +1,16 @@
 ---
-title: Welcome to binflow!
-subtitle: Everything you need to build the best developer experience.
+title: BinFlow
 slug: welcome
-hide-page-actions: true
-hide-nav-links: true
-hide-feedback: true
-layout: overview
 ---
 
-<div className="welcome-hero-tint">
-  <img src="../assets/welcome-light.jpg" className="block dark:hidden" style={{pointerEvents:'none',cursor:'default',transform:'none',transition:'none',animation:'none'}} />
-  <img src="../assets/welcome-dark.jpg" className="hidden dark:block" style={{pointerEvents:'none',cursor:'default',transform:'none',transition:'none',animation:'none'}} />
-</div>
+BinFlow 是正在开发中的制品仓库。
+BinFlow is an artifact repository under development.
 
-## Products
+<Note>
+目前尚无正式发布的可安装产品版本。安装、仓库配置、制品上传下载与 API 指南将在相应功能完成验证后提供。
+No installable product release is available yet. Guides for installation, repository configuration, artifact transfers and APIs will follow verified functionality.
+</Note>
 
-<CardGroup cols={3}>
-  <Card title="Payments" icon="duotone credit-card">
-    Accept one-time and recurring payments with a simple, unified API
-  </Card>
-  <Card title="Subscriptions" icon="duotone arrows-repeat">
-    Create and manage recurring billing plans with built-in proration and trials
-  </Card>
-  <Card title="Invoicing" icon="duotone file-invoice-dollar">
-    Generate, send, and track invoices automatically
-  </Card>
-</CardGroup>
-
-## Get started
-
-<Steps>
-<Step title="Install the SDK">
-
-One SDK gives you access to Payments, Subscriptions, and Invoicing. 
-<CodeBlocks>
-  ```bash title="npm"
-  npm install @acme/sdk
-  ```
-
-  ```bash title="pip"
-  pip install acme-sdk
-  ```
-
-  ```bash title="go"
-  go get github.com/acme/acme-go
-  ```
-</CodeBlocks>
-
-</Step>
-<Step title="Authenticate">
-
-Create an API key from the Acme Dashboard and add it to your environment:
-
-```bash
-export ACME_API_KEY="sk_live_..."
-```
-
-</Step>
-<Step title="Explore the docs">
-
-You're ready to go. Dive deeper into the platform:
-
-- [API reference](/api-reference) — browse all available endpoints
-- [Write content](/writing-content) — author pages with MDX and components
-- [Edit your docs](/editing-your-docs) — customize content, styling, and structure
-
-</Step>
-</Steps>
+- [API 参考 / API reference](/api-reference)：当前可用状态 / Current availability.
+- [发布说明 / Release notes](/releases)：正式版本记录 / Product release history.
+- [问题反馈 / Support](/support)：报告使用或文档问题 / Report usage or documentation issues.
