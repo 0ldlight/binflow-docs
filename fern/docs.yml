@@ -17,6 +17,8 @@ navigation:
     layout:
       - page: BinFlow
         path: docs/pages/welcome.mdx
+      - page: 配置下载服务 / Configure downloads
+        path: docs/pages/configure-downloads.mdx
       - page: API 参考 / API reference
         path: docs/pages/api-reference-overview.mdx
       - page: 发布说明 / Release notes
