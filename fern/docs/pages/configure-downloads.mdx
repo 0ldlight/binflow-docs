@@ -1,0 +1,94 @@
+---
+title: 配置下载服务 / Configure downloads
+slug: configure-downloads
+---
+
+此功能为源码构建的受限预览，尚无可安装的产品发行版。它只读取已经准备好的 local/generic 仓库与制品；不会创建数据库表、账户或授权，也没有上传或账户管理接口。首次使用前，请让管理员准备数据库、仓库、读授权和制品目录。
+This source-build preview reads existing local/generic repositories. Ask your administrator to provision the database, accounts, read grants and stored artifacts first. It does not bootstrap accounts or provide uploads.
+
+## 构建二进制 / Build the binary
+
+使用 [BinFlow 源码仓库](https://github.com/0ldlight/bf)中包含下载模式的源码，在仓库根目录使用 Go 1.27.1 或更高版本构建。下文的命令假设当前目录中已有构建出的 binflow；这不是正式发行包。
+Build from the [BinFlow source repository](https://github.com/0ldlight/bf) with Go 1.27.1 or later. Run this in the source repository root; the following examples use the resulting local binary.
+
+```sh
+go build -o binflow ./cmd/binflow
+```
+
+## 默认健康模式 / Default health mode
+
+直接启动 `binflow` 只开放健康检查，默认监听 `127.0.0.1:8080`。`BINFLOW_LISTEN_ADDR` 可以改变健康模式的监听地址。健康检查成功不代表下载模式已启用。
+Running `binflow` without selecting a mode serves health checks only. A successful health check does not mean downloads are enabled.
+
+## 下载配置 / Download configuration
+
+将配置保存在运行 BinFlow 的用户所拥有的普通文件中，权限设为 `0600` 或只读的 `0400`。使用绝对路径；配置文件不能是符号链接，不能超过 16 KiB。不要把真实配置提交到代码库或贴入聊天、工单。
+Use an owner-only regular configuration file and an absolute path. Keep its credentials out of repositories and support messages.
+
+```json
+{
+  "listen_addr": "127.0.0.1:18080",
+  "postgres_dsn": "<由管理员提供的完整 PostgreSQL 连接 URL>",
+  "filestore_root": "/absolute/path/to/filestore",
+  "repo_key": "generic-local",
+  "challenge": "Basic realm=\"BinFlow\"",
+  "failure_threshold": 3,
+  "failure_window_seconds": 60,
+  "block_seconds": 60,
+  "max_tracked_users": 4096
+}
+```
+
+九个字段均必需；未知、重复字段或无效值会使启动失败。`repo_key` 必须是已配置的 local/generic 仓库。失败次数为 1–100，窗口和阻断时间为 1–3600 秒，跟踪用户上限为 1–4096。
+All nine fields are required. Unknown or duplicate fields fail startup. Repository and permission data must already exist.
+
+数据库连接 URL 必须明确包含单一主机、端口、用户、非空密码、数据库及 `sslmode`，可选 `search_path`。字面量回环数据库可使用 `sslmode=disable`；远端数据库只支持使用系统 CA 的 `sslmode=verify-full`。本预览不支持多主机、服务文件、密码文件、自定义 CA 或客户端证书。
+Use a complete single-host PostgreSQL URL. Plaintext database connections are restricted to literal loopback addresses; remote connections require hostname-verified TLS using system CAs.
+
+下载模式拒绝已有的 `PG` 前缀环境设置，避免数据库连接参数被其他工具的环境补充。请通过独立的服务环境启动，并把全部数据库设置放入受控配置文件。
+Start downloads in a dedicated service environment without ambient `PG` settings.
+
+## 启动与停止 / Start and stop
+
+下载模式使用 JSON 中的监听地址，不能同时设置 `BINFLOW_LISTEN_ADDR`。
+Download mode takes its listener from JSON; do not also set `BINFLOW_LISTEN_ADDR`.
+
+```sh
+unset BINFLOW_LISTEN_ADDR
+BINFLOW_MODE=download \
+BINFLOW_DOWNLOAD_CONFIG=/absolute/path/to/download.json \
+./binflow
+```
+
+下载监听仅接受字面量回环 IPv4/IPv6 地址。外部访问须由管理员配置并验证 HTTPS 入口；不要将 Basic 认证直接开放到公网明文 HTTP，也不要依赖转发头改变这个限制。
+Downloads bind only to a literal loopback address. Use an administrator-managed HTTPS entry point for external access.
+
+等待日志出现 `binflow: listening on ...` 后再访问。配置、数据库、安全数据或仓库不完整时，进程会非零退出，不会退回健康模式。发送 `SIGTERM` 或 `SIGINT` 可停止服务；正常停止会等待在途请求。排空超时会中止连接并非零退出，请勿把它当作成功完成的下载。
+Wait for the listening message. Incomplete configuration fails startup. Signals initiate graceful shutdown; a drain timeout aborts connections and exits with failure.
+
+## 下载与常见响应 / Downloads and responses
+
+仅支持已有 ASCII 路径上的 `.bin`、`.txt` 文件，方法为 GET 和 HEAD。Basic 使用已配置的用户名和密码；可让 curl 交互式提示密码，避免把密码放入命令参数。
+Only existing ASCII `.bin` and `.txt` paths support GET and HEAD. Let curl prompt for the password.
+
+```sh
+curl --user "$BINFLOW_USER" \
+  http://127.0.0.1:18080/artifactory/generic-local/dir/a.bin \
+  --output a.bin
+
+curl --user "$BINFLOW_USER" --head \
+  http://127.0.0.1:18080/artifactory/generic-local/dir/a.bin
+```
+
+| 响应 / Response | 说明 / Meaning |
+| --- | --- |
+| 200 | 下载成功；HEAD 仅返回表示头，不返回文件字节 / Success; HEAD has no file body |
+| 401 | 缺失或无效凭据 / Missing or invalid credentials |
+| 403 | 缺少 read 授权，或同一用户名已被临时阻断 / Read denied or temporary authentication block |
+| 404 | 仓库或文件缺席，或不属于此服务配置的仓库 / Missing or unserved repository/file |
+| 400、405、501 | 路径、方法或功能超出当前支持范围 / Unsupported request profile |
+| 500 | 数据库或存储故障；请联系管理员 / Database or storage failure |
+| 503 | 服务正在停止 / Service is stopping |
+
+此预览不支持匿名、Bearer、部分下载 Range、条件请求、查询参数、复杂路径授权或完整 Artifactory API 兼容。组或直接 read 授权变更在后续请求重新核实；已经获准的在途传输可能完成。
+Anonymous/Bearer access, ranges, conditional requests, queries and broader API compatibility remain outside this preview.
