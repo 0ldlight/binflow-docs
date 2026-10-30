@@ -42,8 +42,8 @@ Use an owner-only regular configuration file and an absolute path. Keep its cred
 九个字段均必需；未知、重复字段或无效值会使启动失败。`repo_key` 必须是已配置的 local/generic 仓库。失败次数为 1–100，窗口和阻断时间为 1–3600 秒，跟踪用户上限为 1–4096。
 All nine fields are required. Unknown or duplicate fields fail startup. Repository and permission data must already exist.
 
-数据库连接 URL 必须明确包含单一主机、端口、用户、非空密码、数据库及 `sslmode`，可选 `search_path`。字面量回环数据库可使用 `sslmode=disable`；远端数据库只支持使用系统 CA 的 `sslmode=verify-full`。本预览不支持多主机、服务文件、密码文件、自定义 CA 或客户端证书。
-Use a complete single-host PostgreSQL URL. Plaintext database connections are restricted to literal loopback addresses; remote connections require hostname-verified TLS using system CAs.
+数据库连接 URL 必须明确包含单一主机、端口、用户、非空密码、数据库及 `sslmode`，可选 `search_path`。字面量回环数据库可使用 `sslmode=disable`；远端数据库只支持使用系统 CA 的 `sslmode=verify-full`。本预览不支持多主机、服务文件、密码文件、在连接 URL 中指定 CA 文件或客户端证书。若数据库 CA 不在默认信任集合中，请让管理员准备并验证该服务使用的信任集合；不要关闭证书链或主机名校验。
+Use a complete single-host PostgreSQL URL. Plaintext database connections are restricted to literal loopback addresses; remote connections require hostname-verified TLS using the service’s configured system trust pool. An administrator must provision and verify any additional trusted CA; CA-file URL parameters are not supported.
 
 若管理员确认连接需要禁用语句缓存，可在 URL 中显式增加 `default_query_exec_mode=exec`；仅接受 `exec`，空值、其他值或重复参数会使启动失败。不设置时保留默认行为。此选项不保证任意事务连接池均可使用；管理员仍须验证实际连接池的 schema 隔离与权限行为。
 If your administrator requires uncached execution, add `default_query_exec_mode=exec` to the URL. Other, empty or duplicate values fail startup. The option alone does not establish compatibility with a transaction pooler.
