@@ -45,6 +45,9 @@ All nine fields are required. Unknown or duplicate fields fail startup. Reposito
 数据库连接 URL 必须明确包含单一主机、端口、用户、非空密码、数据库及 `sslmode`，可选 `search_path`。字面量回环数据库可使用 `sslmode=disable`；远端数据库只支持使用系统 CA 的 `sslmode=verify-full`。本预览不支持多主机、服务文件、密码文件、自定义 CA 或客户端证书。
 Use a complete single-host PostgreSQL URL. Plaintext database connections are restricted to literal loopback addresses; remote connections require hostname-verified TLS using system CAs.
 
+若管理员确认连接需要禁用语句缓存，可在 URL 中显式增加 `default_query_exec_mode=exec`；仅接受 `exec`，空值、其他值或重复参数会使启动失败。不设置时保留默认行为。此选项不保证任意事务连接池均可使用；管理员仍须验证实际连接池的 schema 隔离与权限行为。
+If your administrator requires uncached execution, add `default_query_exec_mode=exec` to the URL. Other, empty or duplicate values fail startup. The option alone does not establish compatibility with a transaction pooler.
+
 下载模式拒绝已有的 `PG` 前缀环境设置，避免数据库连接参数被其他工具的环境补充。请通过独立的服务环境启动，并把全部数据库设置放入受控配置文件。
 Start downloads in a dedicated service environment without ambient `PG` settings.
 
