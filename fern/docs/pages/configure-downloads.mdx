@@ -1,10 +1,10 @@
 ---
-title: 配置下载服务 / Configure downloads
+title: 配置下载与上传 / Configure downloads and uploads
 slug: configure-downloads
 ---
 
-此功能为源码构建的受限预览，尚无可安装的产品发行版。它只读取已经准备好的 local/generic 仓库与制品；不会创建数据库表、账户或授权，也没有上传或账户管理接口。首次使用前，请让管理员准备数据库、仓库、读授权和制品目录。
-This source-build preview reads existing local/generic repositories. Ask your administrator to provision the database, accounts, read grants and stored artifacts first. It does not bootstrap accounts or provide uploads.
+此功能为源码构建的受限预览，尚无可安装的产品发行版。下文的 download 模式只读取已经准备好的 local/generic 仓库与制品；不会创建数据库表、账户或授权，也不启用上传或账户管理接口。首次使用前，请让管理员准备数据库、仓库、读授权和制品目录。
+Download mode in this source-build preview reads existing local/generic repositories. Ask your administrator to provision the database, accounts, read grants and stored artifacts first. Download mode does not bootstrap accounts or enable uploads.
 
 ## 构建二进制 / Build the binary
 
@@ -95,3 +95,45 @@ curl --user "$BINFLOW_USER" --head \
 
 此预览不支持匿名、Bearer、部分下载 Range、条件请求、查询参数、复杂路径授权或完整 Artifactory API 兼容。组或直接 read 授权变更在后续请求重新核实；已经获准的在途传输可能完成。
 Anonymous/Bearer access, ranges, conditional requests, queries and broader API compatibility remain outside this preview.
+
+## 普通上传 / Ordinary uploads
+
+管理员必须显式启用 `BINFLOW_MODE=artifacts` 并准备上传配置及授权，才能使用普通 PUT；上文的 download 配置不能直接用于此模式。普通 PUT 是源码构建的受限预览；请先向管理员确认目标入口已启用，并为你的账户授予所需权限。
+Your administrator must explicitly enable `BINFLOW_MODE=artifacts` and prepare upload configuration and permissions before ordinary PUT can be used. The download configuration above is insufficient for this mode. Ordinary PUT is a limited source-build preview. Confirm with your administrator that the target endpoint is enabled and your account has the required permissions.
+
+上传仅支持已配置 local/generic 仓库中的受限 ASCII `.bin`、`.txt` 文件路径。请使用管理员提供的 HTTPS 入口与专用测试路径。已验证的 UAT 环境将单次正文限制为 1 MiB（1,048,576 字节）；其他环境的上限请向管理员确认。
+Uploads support restricted ASCII `.bin` and `.txt` file paths in the configured local/generic repository. Use the HTTPS endpoint and dedicated test path supplied by your administrator. The verified UAT environment limits each request body to 1 MiB (1,048,576 bytes). Ask your administrator for the limit in other environments.
+
+准备普通文件 `a.bin`，设置 `BINFLOW_BASE_URL` 为管理员提供的入口、`BINFLOW_USER` 为应用用户名。curl 会交互式提示 Basic 密码，不要将密码放入命令参数。
+Prepare a regular file named `a.bin`, set `BINFLOW_BASE_URL` to the administrator-provided endpoint and `BINFLOW_USER` to your application username. Let curl prompt for the Basic password; keep passwords out of command arguments.
+
+```sh
+SHA256=$(shasum -a 256 a.bin | awk '{print $1}')
+
+curl --include --user "$BINFLOW_USER" \
+  --header "X-Checksum-Sha256: $SHA256" \
+  --header 'Expect:' \
+  --upload-file a.bin \
+  "$BINFLOW_BASE_URL/artifactory/generic-local/dir/a.bin"
+```
+
+`X-Checksum-Sha256` 可选；提供时必须恰为一个由 64 个小写十六进制字符组成的摘要，并与正文一致。请求必须有已知的 Content-Length；示例由 curl 从普通文件计算长度。不支持分块传输、查询参数、条件请求或 checksum-deploy。
+`X-Checksum-Sha256` is optional. When supplied, it must contain exactly one 64-character lowercase hexadecimal digest matching the body. Content-Length must be known; curl derives it from the regular file in this example. Chunked transfer, query parameters, conditional requests and checksum-deploy are unsupported.
+
+每次上传都需要 deploy 授权。新路径不需要 delete；覆盖已有文件时，若 SHA1 和 SHA256 均未提供，或任一已提供摘要与已有文件不一致，还需要 delete。当前 artifacts 模式下，至少提供其中一种摘要且所有已提供的这两种摘要均一致时，不需要 delete。仅提供 MD5 不能免除 delete。这里的 delete 是覆盖权限，不表示提供 HTTP DELETE 接口。提交时会重新检查授权与目标状态。
+Every upload requires deploy permission. A new path does not require delete. For an existing file, delete is also required when both SHA1 and SHA256 are omitted or any supplied SHA1/SHA256 differs from the stored file. In the current artifacts mode, delete is unnecessary when at least one of those digests is supplied and all supplied SHA1/SHA256 values match. MD5 alone does not waive delete. Here, delete is an overwrite permission, rather than an HTTP DELETE endpoint. Permissions and target state are checked again at commit.
+
+| 响应 / Response | 说明 / Meaning |
+| --- | --- |
+| 201 | 保存已提交；返回制品元数据、Location 和实际 X-Checksum-Sha256 / Committed; returns artifact metadata, Location and the actual X-Checksum-Sha256 |
+| 401 | 缺失或无效凭据，或账户已禁用 / Missing or invalid credentials, or disabled account |
+| 403 | 缺少 deploy 或所需的 delete、用户名临时阻断，或提交复查拒绝 / Missing deploy or required delete, temporary authentication block, or commit-time denial |
+| 409 | 正文与声明的长度或摘要不一致；不是“目标已存在” / Body differs from the declared length or checksum; an existing target alone does not cause this response |
+| 400 | 路径、摘要格式或请求正文无效 / Invalid path, checksum format or request body |
+| 411 | 正文长度未知 / Unknown Content-Length |
+| 413 | 正文超过配置上限 / Body exceeds the configured limit |
+| 405、501 | 方法或请求功能超出支持范围 / Unsupported method or request feature |
+| 500 | 数据库或存储故障 / Database or storage failure |
+
+启用后，在管理员分配的测试路径确认：不带认证为 401；有效账户缺少 deploy 为 403；有 deploy 的新文件为 201；在另一个新路径提供格式有效但与正文不同的摘要为 409。成功后使用有 read 授权的账户下载，核对字节与摘要。相同摘要重传应为 201；无 delete 的不同内容覆盖应为 403，补充 delete 后应为 201，撤销 deploy 后应为 403。已有文件的上传被拒绝后，重新下载并确认原文件未改变。
+After activation, use the assigned test path to confirm: no authentication gives 401; valid credentials without deploy give 403; a new file with deploy gives 201; a well-formed digest differing from the body at another new path gives 409. After success, download with a read-authorized account and compare the bytes and digest. A matching-digest retry should give 201; different content without delete should give 403, then 201 after delete is granted, and 403 after deploy is revoked. After a denied upload to an existing file, download again to confirm the previous file is unchanged.
