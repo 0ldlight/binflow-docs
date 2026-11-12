@@ -71,8 +71,11 @@ Wait for the listening message. Incomplete configuration fails startup. Signals 
 
 ## 下载与常见响应 / Downloads and responses
 
-仅支持已有 ASCII 路径上的 `.bin`、`.txt` 文件，方法为 GET 和 HEAD。Basic 使用已配置的用户名和密码；可让 curl 交互式提示密码，避免把密码放入命令参数。
-Only existing ASCII `.bin` and `.txt` paths support GET and HEAD. Let curl prompt for the password.
+仅支持已有 ASCII 路径上的精确小写 `.bin`、`.txt`、`.json` 文件，方法为 GET 和 HEAD。Basic 使用已配置的用户名和密码；可让 curl 交互式提示密码，避免把密码放入命令参数。
+Only existing ASCII paths with exact lowercase `.bin`, `.txt` or `.json` extensions support GET and HEAD. Let curl prompt for the password.
+
+`.json` 文件的下载 Content-Type 为精确的 `application/json`。类型按最终后缀确定：`a.json.txt` 仍为 `text/plain`，`a.txt.json` 为 `application/json`。服务器将正文视为原始制品字节，不解析或验证 JSON；空正文与非 JSON 字节同样原样保存和下载。
+A `.json` download has exactly `Content-Type: application/json`. The final suffix determines the type: `a.json.txt` remains `text/plain`, while `a.txt.json` is `application/json`. Bodies remain opaque artifact bytes, without JSON parsing or validation; empty and non-JSON content is stored and downloaded unchanged.
 
 ```sh
 curl --user "$BINFLOW_USER" \
@@ -101,20 +104,20 @@ Anonymous/Bearer access, ranges, conditional requests, queries and broader API c
 管理员必须显式启用 `BINFLOW_MODE=artifacts` 并准备上传配置及授权，才能使用普通 PUT；上文的 download 配置不能直接用于此模式。普通 PUT 是源码构建的受限预览；请先向管理员确认目标入口已启用，并为你的账户授予所需权限。
 Your administrator must explicitly enable `BINFLOW_MODE=artifacts` and prepare upload configuration and permissions before ordinary PUT can be used. The download configuration above is insufficient for this mode. Ordinary PUT is a limited source-build preview. Confirm with your administrator that the target endpoint is enabled and your account has the required permissions.
 
-上传仅支持已配置 local/generic 仓库中的受限 ASCII `.bin`、`.txt` 文件路径。请使用管理员提供的 HTTPS 入口与专用测试路径。已验证的 UAT 环境将单次正文限制为 1 MiB（1,048,576 字节）；其他环境的上限请向管理员确认。
-Uploads support restricted ASCII `.bin` and `.txt` file paths in the configured local/generic repository. Use the HTTPS endpoint and dedicated test path supplied by your administrator. The verified UAT environment limits each request body to 1 MiB (1,048,576 bytes). Ask your administrator for the limit in other environments.
+上传仅支持已配置 local/generic 仓库中的受限 ASCII 路径，扩展名必须为精确小写 `.bin`、`.txt` 或 `.json`。请使用管理员提供的 HTTPS 入口与专用测试路径。已验证的 UAT 环境将单次正文限制为 1 MiB（1,048,576 字节）；其他环境的上限请向管理员确认。
+Uploads support restricted ASCII file paths with exact lowercase `.bin`, `.txt` or `.json` extensions in the configured local/generic repository. Use the HTTPS endpoint and dedicated test path supplied by your administrator. The verified UAT environment limits each request body to 1 MiB (1,048,576 bytes). Ask your administrator for the limit in other environments.
 
-准备普通文件 `a.bin`，设置 `BINFLOW_BASE_URL` 为管理员提供的入口、`BINFLOW_USER` 为应用用户名。curl 会交互式提示 Basic 密码，不要将密码放入命令参数。
-Prepare a regular file named `a.bin`, set `BINFLOW_BASE_URL` to the administrator-provided endpoint and `BINFLOW_USER` to your application username. Let curl prompt for the Basic password; keep passwords out of command arguments.
+准备普通文件 `a.json`，设置 `BINFLOW_BASE_URL` 为管理员提供的入口、`BINFLOW_USER` 为应用用户名。curl 会交互式提示 Basic 密码，不要将密码放入命令参数。
+Prepare a regular file named `a.json`, set `BINFLOW_BASE_URL` to the administrator-provided endpoint and `BINFLOW_USER` to your application username. Let curl prompt for the Basic password; keep passwords out of command arguments.
 
 ```sh
-SHA256=$(shasum -a 256 a.bin | awk '{print $1}')
+SHA256=$(shasum -a 256 a.json | awk '{print $1}')
 
 curl --include --user "$BINFLOW_USER" \
   --header "X-Checksum-Sha256: $SHA256" \
   --header 'Expect:' \
-  --upload-file a.bin \
-  "$BINFLOW_BASE_URL/artifactory/generic-local/dir/a.bin"
+  --upload-file a.json \
+  "$BINFLOW_BASE_URL/artifactory/generic-local/dir/a.json"
 ```
 
 `X-Checksum-Sha256` 可选；提供时必须恰为一个由 64 个小写十六进制字符组成的摘要，并与正文一致。请求必须有已知的 Content-Length；示例由 curl 从普通文件计算长度。不支持分块传输、查询参数、条件请求或 checksum-deploy。
