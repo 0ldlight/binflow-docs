@@ -89,6 +89,7 @@ curl --user "$BINFLOW_USER" --head \
 | 响应 / Response | 说明 / Meaning |
 | --- | --- |
 | 200 | 下载成功；HEAD 仅返回表示头，不返回文件字节 / Success; HEAD has no file body |
+| 304 | GET 验证器命中；没有正文、Content-Type 或 Content-Length / GET validator match; no body, Content-Type or Content-Length |
 | 401 | 缺失或无效凭据 / Missing or invalid credentials |
 | 403 | 缺少 read 授权，或同一用户名已被临时阻断 / Read denied or temporary authentication block |
 | 404 | 仓库或文件缺席，或不属于此服务配置的仓库 / Missing or unserved repository/file |
@@ -96,8 +97,31 @@ curl --user "$BINFLOW_USER" --head \
 | 500 | 数据库或存储故障；请联系管理员 / Database or storage failure |
 | 503 | 服务正在停止 / Service is stopping |
 
-此预览不支持匿名、Bearer、部分下载 Range、条件请求、查询参数、复杂路径授权或完整 Artifactory API 兼容。组或直接 read 授权变更在后续请求重新核实；已经获准的在途传输可能完成。
-Anonymous/Bearer access, ranges, conditional requests, queries and broader API compatibility remain outside this preview.
+此预览不支持匿名、Bearer、部分下载 Range、下述范围以外的条件请求、查询参数、复杂路径授权或完整 Artifactory API 兼容。组或直接 read 授权变更在后续请求重新核实；已经获准的在途传输可能完成。
+Anonymous/Bearer access, ranges, conditions outside the profile below, queries and broader API compatibility remain outside this preview.
+
+## 条件下载 / Conditional downloads
+
+设置 `BINFLOW_BASE_URL` 为管理员提供的 HTTPS 入口、`BINFLOW_USER` 为应用用户名；curl 会交互式提示密码。
+Set `BINFLOW_BASE_URL` to the administrator-provided HTTPS endpoint and `BINFLOW_USER` to your application username; let curl prompt for the password.
+
+仅 GET 支持单值 `If-None-Match` 和规范 GMT `If-Modified-Since`。先从普通下载响应保存 ETag 与 Last-Modified，再在后续 GET 中发送其中一个或两个验证器；认证与 read 权限仍然必需。
+Only GET supports single-value `If-None-Match` and canonical GMT `If-Modified-Since`. Save ETag and Last-Modified from a normal download, then send either or both on later GET requests. Authentication and read permission remain required.
+
+```sh
+curl --include --user "$BINFLOW_USER" \
+  --header "If-None-Match: $BINFLOW_ETAG" \
+  "$BINFLOW_BASE_URL/artifactory/generic-local/dir/a.json"
+```
+
+将 `BINFLOW_ETAG` 设为该文件最近响应的 ETag。匹配返回无正文 304，并保留 ETag、Last-Modified、校验和与下载文件名；不匹配返回当前完整文件。`W/` 弱前缀和一对外围引号在受限范围内支持。这里的 `*` 不表示“任意已有文件”，它会继续普通 200 下载。
+Set `BINFLOW_ETAG` to the file's last response ETag. A match returns bodyless 304 with validators, checksums and the download filename; a miss returns the current full file. A single `W/` prefix and outer quotes are supported. Here, `*` does not match any existing file and continues a normal 200 download.
+
+日期必须使用规范 IMF-fixdate GMT（例如 `Thu, 01 Jan 1970 00:00:00 GMT`），年份为 1970..9999。只有日期条件时，文件修改时间不晚于该日期则返回 304。两个条件同时存在时，ETag 条件优先；即使日期匹配，ETag 不匹配仍返回 200。所有提供的条件都必须先通过格式校验。
+Dates require canonical IMF-fixdate GMT in years 1970..9999. A date-only request returns 304 when the file is not newer. ETag takes precedence when both conditions are present, so an ETag miss still returns 200 even if the date matches. Every supplied condition must have a supported format.
+
+不支持列表、重复头、空值、非 ASCII 或原始头值超过 128 字节的 ETag（包括 `W/`、引号和外围空格）；只接受字母、数字、点、下划线、星号与连字符组成的单个 token，以及上述可选包装。HEAD 条件、Range、其他条件头，及条件请求中的 `Last-Modified`、`X-Artifactory-If-None-Match-MD5` 修饰头返回 501。304 基于已授权的元数据，不保证磁盘内容已被重新读取或校验。
+Lists, duplicate or empty headers, non-ASCII and raw ETag header values over 128 bytes, including the weak prefix, quotes and surrounding spaces, are unsupported. Tokens admit letters, digits, dots, underscores, stars and hyphens with the optional wrappers above. Conditional HEAD, Range, other conditions and conditional-request date/MD5 modifiers return 501. A 304 uses authorized metadata; it does not attest that stored bytes have been reread or reverified.
 
 ## 普通上传 / Ordinary uploads
 
